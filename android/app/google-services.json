@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "18128990275",
+    "project_id": "tab-bar-84d2e",
+    "storage_bucket": "tab-bar-84d2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18128990275:android:df15c192f385eeeae4e4f6",
+        "android_client_info": {
+          "package_name": "com.example.tab_bar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "18128990275-c37424tepufmsl5i4ukjo15cnaej8ap0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoJ2mSppvXBOS-WCRR1x5KXBT8EOAD41o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "18128990275-c37424tepufmsl5i4ukjo15cnaej8ap0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
