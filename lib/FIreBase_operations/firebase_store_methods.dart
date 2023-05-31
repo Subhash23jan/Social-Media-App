@@ -80,5 +80,8 @@ class FirestoreMethods{
       print(e.toString());
     }
   }
+  Future<void>addBookMarks(String userUid,String postUrl) async{
+
+  }
 
 }

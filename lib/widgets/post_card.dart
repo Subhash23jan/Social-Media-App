@@ -7,7 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:tab_bar/FIreBase_operations/firebase_store_methods.dart';
 import 'package:tab_bar/Models/user_model.dart';
+import 'package:tab_bar/pages/profile_page.dart';
 import 'package:tab_bar/screens/comment_screen.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tab_bar/widgets/like_animation.dart';
 
 class PostCard extends StatefulWidget {
@@ -23,19 +25,26 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isAnimating=false;
   int commentLen=0;
+  QuerySnapshot? postUploader;
   @override
   void initState() {
     super.initState();
     if(mounted) {
       fetchCommentLength();
     }
+    fetchPostUploaderDetails();
   }
-
+  fetchPostUploaderDetails()async{
+     postUploader=await FirebaseFirestore.instance.collection("users").where('uid',isEqualTo:widget.snap['uid']).get();
+  }
   fetchCommentLength() async{
     QuerySnapshot snapshot=await  FirebaseFirestore.instance.collection("posts").doc(widget.snap['postId']).collection("comments").get();
-    setState(() {
-      commentLen=snapshot.docs.length;
-    });
+    if(mounted)
+      {
+        setState(() {
+          commentLen=snapshot.docs.length;
+        });
+      }
   }
   @override
   Widget build(BuildContext context) {
@@ -43,7 +52,7 @@ class _PostCardState extends State<PostCard> {
       List likes=widget.snap['likes'];
       return Container(
         color: Colors.black,
-        padding: const EdgeInsets.only(top: 35,left: 5,right: 5),
+        padding: const EdgeInsets.only(top: 25,left: 5,right: 5),
         child: Column(
           children: [
             Column(
@@ -55,12 +64,14 @@ class _PostCardState extends State<PostCard> {
                     const SizedBox(width: 10,),
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(widget.snap['profileUrl']),
+                      backgroundImage: NetworkImage(postUploader?.docs[0]['profile_url']??"https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"),
                     ),
                     const SizedBox(width: 12,),
                     Expanded(child: InkWell(
-                      onTap: (){},
-                      child:  Text(widget.snap['name'],style: const TextStyle(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileScreen(uid: postUploader?.docs[0]['uid']),));
+                      },
+                      child:  Text(postUploader?.docs[0]['name'],style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
@@ -105,14 +116,16 @@ class _PostCardState extends State<PostCard> {
                         }
                       },
                       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                        if(widget.user.uid!=widget.snap['uid'])
-                        const PopupMenuItem<String>(
-                          value: 'Option 2',
-                          child: Text('Edit',style: TextStyle(color: Colors.white),),
-                        ),
-                        const PopupMenuItem<String>(
+                        widget.user.uid==widget.snap['uid']?const PopupMenuItem<String>(
+                          value: 'Option 1',
+                          child: Text('Delete',style: TextStyle(color: Colors.white),),
+                        ):const PopupMenuItem<String>(
                           value: 'Option 3',
                           child: Text('Report',style: TextStyle(color: Colors.white),),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'Option 2',
+                          child: Text('More',style: TextStyle(color: Colors.white),),
                         ),
                       ],
                     )
@@ -157,8 +170,10 @@ class _PostCardState extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   children:<Widget>[
                     IconButton(onPressed: (){}, icon:likes.contains(widget.user.uid)?const Icon(Icons.favorite,color:Colors.red):const Icon(Icons.favorite_outline_rounded,color: Colors.white,)),
-                    IconButton(onPressed: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context) =>CommentScreen(widget.snap),)),icon: const Icon(FontAwesomeIcons.comment,color: Colors.white,)),
-                    IconButton(onPressed: (){}, icon: const Icon(Icons.share,color: Colors.white)),
+                    IconButton(onPressed: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context) =>CommentScreen(widget.snap),)),icon: const Icon(FontAwesomeIcons.commentDots,color: Colors.white,)),
+                    IconButton(onPressed: () async{
+                     await Share.share(widget.snap['postUrl'],subject:"Share this post using ");
+                    }, icon: const Icon(Icons.share,color: Colors.white)),
                     IconButton(onPressed: (){}, icon: const Icon(Icons.bookmark_border,color: Colors.white),padding: const EdgeInsets.only(left: 200),),
                   ],
                 ),
@@ -171,21 +186,21 @@ class _PostCardState extends State<PostCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(widget.snap['name'],style: GoogleFonts.aBeeZee(fontWeight: FontWeight.bold,color: Colors.white),),
-                      Text("  ${widget.snap['desc']}",style: GoogleFonts.aBeeZee(fontWeight:FontWeight.bold,color: Colors.white60),),
+                      InkWell(onTap:()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen(uid: postUploader?.docs[0]['uid']))),child: Text(postUploader?.docs[0]['name'],
+                        style: GoogleFonts.aBeeZee(fontWeight: FontWeight.bold,color: Colors.white,backgroundColor: Colors.black38),)),
+                      Text("  ${widget.snap['desc']}",style: GoogleFonts.aBeeZee(color: Colors.white70),),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0,top: 3),
-                  child: Text("view $commentLen comments ",style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.w700,color: Colors.white54),),
+                  child: InkWell(onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context) =>CommentScreen(widget.snap),)),child: Text("view $commentLen comments ",style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.w700,color: Colors.white54),)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0,top: 3),
                   child: Text(DateFormat.yMMMd().format(widget.snap['dateTime'].toDate()),
                     style: GoogleFonts.jetBrainsMono(color: Colors.white70),),
                 ),
-
                 const SizedBox(height: 10,),
               ],
             ),
@@ -194,13 +209,7 @@ class _PostCardState extends State<PostCard> {
       );
     }catch(e)
     {
-      return Stack(
-        alignment:Alignment.center,
-        children:  [
-          const Center(child: CircularProgressIndicator(strokeWidth: 4,color: Colors.blue,)),
-          Center(child: Text('loading...',style:GoogleFonts.aBeeZee(fontWeight:FontWeight.bold,color: Colors.black))),
-        ],
-      );
+      return Container(color: Colors.white,);
     }
   }
 }

@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body:isSearching?FutureBuilder(
-        future:FirebaseFirestore.instance.collection("users").where('name',isGreaterThanOrEqualTo:searchInputController.text.toUpperCase()).get(),
+        future:FirebaseFirestore.instance.collection("users").where('name',isGreaterThanOrEqualTo:searchInputController.text.toLowerCase()).get(),
         builder: (context, snapshot) {
           if(!snapshot.hasData){
             return Stack(

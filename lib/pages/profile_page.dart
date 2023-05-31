@@ -39,9 +39,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     UserModel? user=Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
+      appBar:user.uid==widget.uid?AppBar(
+        toolbarHeight: 1,
         backgroundColor: Colors.black,
-        toolbarHeight: 15,
+      ):AppBar(
+        backgroundColor: Colors.black,
+        toolbarHeight:kToolbarHeight-20,
+        leading:const Text(" ",style: TextStyle(color: Colors.black),),
+        actions: [TextButton(onPressed: ()=>Navigator.pop(context), child:Text("back",style:GoogleFonts.aBeeZee(color:Colors.blue,fontSize: 18)))],
       ),
       body:ListView(
         children: [
@@ -65,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CircleAvatar(
-                        backgroundImage:NetworkImage(user.profileUrl),
+                        backgroundImage:NetworkImage(snap['profile_url']),
                         radius: 40,
                       ),
                       Column(
@@ -95,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(user.bio,style:GoogleFonts.aBeeZee(color:Colors.white,fontSize: 18)),
+                      Text(snap['bio'],style:GoogleFonts.damion(color:Colors.white,fontSize: 18)),
                       Padding(
                         padding: const EdgeInsets.only(left: 68.0),
                         child:Container(
@@ -111,7 +116,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                           ),
                           width: 200,
-                          child: TextButton(onPressed: (){}, child:  Text("Edit Profile",style: GoogleFonts.aBeeZee(color: Colors.white,fontSize: 15), )),
+                          child: widget.uid==user.uid?TextButton(onPressed: (){}, child:  Text("Edit Profile",style: GoogleFonts.aBeeZee(color: Colors.white,fontSize: 15), )):
+                          TextButton(onPressed: (){}, child:  Text("Follow",style: GoogleFonts.aBeeZee(color: Colors.blue,fontSize: 15), )),
                         ),
                       )
                     ],
@@ -130,7 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: GridView.builder(
                     shrinkWrap: true,
                     itemCount: postCount,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 4,mainAxisSpacing: 4),
+                    padding:const EdgeInsets.all(5),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,crossAxisSpacing: 5,mainAxisSpacing: 5,),
                     itemBuilder: (context, index) {
                       while(snapshot.data==null)
                         {

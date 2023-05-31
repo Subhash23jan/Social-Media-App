@@ -56,13 +56,7 @@ class _PostFeedScreenState extends State<PostFeedScreen> {
                 return PostCard(snap: snapshot.data!.docs[index].data(),user: user,);
               }catch(e)
               {
-                return Stack(
-                  alignment:Alignment.center,
-                  children:  [
-                    const Center(child: CircularProgressIndicator(strokeWidth: 4,color: Colors.blue,)),
-                    Center(child: Text('Loading...',style:GoogleFonts.aBeeZee(fontWeight:FontWeight.bold,color: Colors.black))),
-                  ],
-                );
+                return Container(color: Colors.white,);
               }
             },
           );

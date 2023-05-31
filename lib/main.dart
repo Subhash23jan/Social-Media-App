@@ -102,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           onTap:onNavigationTap,),
       body:PageView(
+        physics: const NeverScrollableScrollPhysics(),
         controller:_pagecontroller,
         children:screens,
       ),

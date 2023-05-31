@@ -32,7 +32,7 @@ class FirebaseAuthMethods {
             password: password,);
           String ? profileUrl= await FirebaseStorageMethods().addPics('profile_pics', image, false);
           profileUrl=profileUrl ??"";
-          var user= model.UserModel(name: name, email: email, userId: id, profileUrl:profileUrl, bio: bio, uid:cred.user!.uid, followers:[], following: []);
+          var user= model.UserModel(name: name.toLowerCase(), email: email, userId: id, profileUrl:profileUrl, bio: bio, uid:cred.user!.uid, followers:[], following: []);
           await _firestore.collection("users").doc(cred.user?.uid.toString()).set(user.toJson()).then( (value) {
         print("success");
       }).onError((error, stackTrace){
