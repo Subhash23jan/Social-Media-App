@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tab_bar/FIreBase_operations/firebase_auth_methods.dart';
-import 'package:tab_bar/FIreBase_operations/firebase_store_methods.dart';
+import 'package:tab_bar/FIreBase_operations/firestore_methods.dart';
 import 'package:tab_bar/Models/user_model.dart';
 import 'package:tab_bar/providers/user_provider.dart';
 import 'package:tab_bar/utils/usefulumethods.dart';
@@ -23,6 +23,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
   bool isUploading=false;
   final descriptionController=TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    descriptionController.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final UserModel user=Provider.of<UserProvider>(context).getUser;

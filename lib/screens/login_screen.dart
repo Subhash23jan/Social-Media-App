@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tab_bar/FIreBase_operations/firebase_auth_methods.dart';
@@ -23,21 +24,21 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:const Color(0xff150e48),
+      backgroundColor:Colors.black,
       // appBar:AppBar(
       //   title: Text("SignUp page",style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold,),),
       // ),
-      body: Container(
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(
-              height: 65,
+              height: 150,
             ),
             SizedBox(
-              height: 100,
-              child: Text("Instagram",style: GoogleFonts.aBeeZee(color: Colors.white,fontSize: 40),),
+              height: 90,
+              child: SvgPicture.asset('lib/assets/ic_instagram.svg',color: Colors.white,),
             ),
             const SizedBox(
               height: 25,
@@ -117,25 +118,20 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-                style:ButtonStyle(
-                  shadowColor: MaterialStateProperty.resolveWith<Color?>(
-                          (Set<MaterialState>states){
-                        return Colors.white;
-                      }
-                  ),
-                  backgroundColor:MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                      return Colors.blueAccent;
-                      // Use the component's default.
-                    },
-                  ),
-                ),
-                onPressed: (){
-                  loginwithUser();
-                },
-              child:isLoading!=true?Text("Login",style:GoogleFonts.aBeeZee(fontSize: 18),):
-              const CircularProgressIndicator(color: Colors.white,strokeWidth:4),),
+            Container(
+              width: 130,
+              height:50,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(15)
+              ),
+              child: TextButton(
+                  onPressed: (){
+                    loginwithUser();
+                  },
+                child:isLoading!=true?Text("Login",style:GoogleFonts.aBeeZee(fontSize: 18,color: Colors.white),):
+                const CircularProgressIndicator(color: Colors.white),),
+            ),
             const SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

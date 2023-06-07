@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:tab_bar/FIreBase_operations/firebase_store_methods.dart';
+import 'package:tab_bar/FIreBase_operations/firestore_methods.dart';
 import 'package:tab_bar/Models/user_model.dart';
 import 'package:tab_bar/pages/profile_page.dart';
 import 'package:tab_bar/screens/comment_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tab_bar/widgets/like_animation.dart';
+
+import '../pages/image_screen.dart';
 
 class PostCard extends StatefulWidget {
   final dynamic snap;
@@ -26,6 +28,7 @@ class _PostCardState extends State<PostCard> {
   bool isAnimating=false;
   int commentLen=0;
   QuerySnapshot? postUploader;
+  bool isBookmarked=false;
   @override
   void initState() {
     super.initState();
@@ -36,6 +39,15 @@ class _PostCardState extends State<PostCard> {
   }
   fetchPostUploaderDetails()async{
      postUploader=await FirebaseFirestore.instance.collection("users").where('uid',isEqualTo:widget.snap['uid']).get();
+     QuerySnapshot<Map<String,dynamic>> snapshot= await FirebaseFirestore.instance.collection("users").doc(widget.user.uid).collection("bookmarks").where('id',isEqualTo:widget.snap['postId']).get();
+     if(snapshot.docs.isNotEmpty)
+       {
+         if(mounted){
+           setState(() {
+             isBookmarked=true;
+           });
+         }
+       }
   }
   fetchCommentLength() async{
     QuerySnapshot snapshot=await  FirebaseFirestore.instance.collection("posts").doc(widget.snap['postId']).collection("comments").get();
@@ -62,19 +74,23 @@ class _PostCardState extends State<PostCard> {
                 Row(
                   children:  [
                     const SizedBox(width: 10,),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(postUploader?.docs[0]['profile_url']??"https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"),
+                    InkWell(
+                      onTap:()=>Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ImageViewScreen(postUrl:postUploader?.docs[0]['profile_url']),)),
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(postUploader?.docs[0]['profile_url']??"https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"),
+                      ),
                     ),
                     const SizedBox(width: 12,),
                     Expanded(child: InkWell(
                       onTap: (){
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileScreen(uid: postUploader?.docs[0]['uid']),));
                       },
-                      child:  Text(postUploader?.docs[0]['name'],style: const TextStyle(
+                      child:  Text(postUploader?.docs[0]['name'],style: GoogleFonts.aBeeZee(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                        fontSize: 16,
 
                       ),),
                     )),
@@ -110,9 +126,9 @@ class _PostCardState extends State<PostCard> {
                           },);
 
                         } else if (result == 'Option 2') {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('we are working for this')));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('iro option use madro  🫠')));
                         } else if (result == 'Option 3') {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('we are working for this',softWrap: true,)));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('enide anta report madtiya!!  😉',softWrap: true,)));
                         }
                       },
                       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -141,6 +157,8 @@ class _PostCardState extends State<PostCard> {
                       isAnimating=true;
                     });
                   },
+                  onTap:()=>Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ImageViewScreen(postUrl:widget.snap['postUrl']),)),
                   child: Stack(
                     alignment:Alignment.center,
                     children: [
@@ -169,12 +187,24 @@ class _PostCardState extends State<PostCard> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children:<Widget>[
-                    IconButton(onPressed: (){}, icon:likes.contains(widget.user.uid)?const Icon(Icons.favorite,color:Colors.red):const Icon(Icons.favorite_outline_rounded,color: Colors.white,)),
+                    IconButton(onPressed: (){
+                     FirestoreMethods().updateLike(widget.snap['postId'], widget.user.uid, widget.snap['likes']);
+                    }, icon:likes.contains(widget.user.uid)?const Icon(Icons.favorite,color:Colors.red):const Icon(Icons.favorite_outline_rounded,color: Colors.white,)),
                     IconButton(onPressed: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context) =>CommentScreen(widget.snap),)),icon: const Icon(FontAwesomeIcons.commentDots,color: Colors.white,)),
                     IconButton(onPressed: () async{
-                     await Share.share(widget.snap['postUrl'],subject:"Share this post using ");
+                     await Share.share(widget.snap['postUrl'],subject:"share using");
                     }, icon: const Icon(Icons.share,color: Colors.white)),
-                    IconButton(onPressed: (){}, icon: const Icon(Icons.bookmark_border,color: Colors.white),padding: const EdgeInsets.only(left: 200),),
+                    isBookmarked?IconButton(onPressed: (){
+                      FirestoreMethods().removeBookmarks(widget.user.uid, widget.snap['postId']);
+                      setState(() {
+                        isBookmarked=false;
+                      });
+                    },icon: const Icon(Icons.bookmark,color: Colors.white,size: 30,),padding: const EdgeInsets.only(left: 200),):IconButton(onPressed: (){
+                      FirestoreMethods().addBookMarks(widget.user.uid, widget.snap['postId']);
+                      setState(() {
+                        isBookmarked=true;
+                      });
+                    }, icon: const Icon(Icons.bookmark_border,color: Colors.white,size: 30),padding: const EdgeInsets.only(left: 200),),
                   ],
                 ),
                 Padding(

@@ -31,16 +31,16 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:const Color(0xff150e48),
+      backgroundColor:Colors.black,
       body:Container(
         color: Colors.black,
-        child: Center(
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Center(
             child: Column(
               children: [
-               const SizedBox(height: 80,),
+               const SizedBox(height: 30,),
                 SizedBox(
-                  height: 100,
+                  height: 90,
                   child: SvgPicture.asset('lib/assets/ic_instagram.svg',color: Colors.white,),
                 ),
                 Stack(
@@ -220,27 +220,43 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 20,),
-                ElevatedButton(
-                    style:ButtonStyle(
-                      shadowColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState>states){
-                            return Colors.white;
-                          }
-                      ),
-                      backgroundColor:MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                          return Colors.indigo;
-                        },
-                      ),
-                    ),
-                    onPressed: (){
-                      if(isValid()==true)
-                        {
-                          createAccount();
-                        }
-                    },
-                    child:_isLoading==false?Text("sign up",style:GoogleFonts.aBeeZee(fontSize: 18),):
-                    const CircularProgressIndicator(color: Colors.white,strokeWidth:4,)
+                Container(
+                  width: 130,
+                  height: 50,
+                  decoration:BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(15)
+                  ),
+                  child: TextButton(
+                      onPressed: (){
+                        if(isValid()==true)
+                          {
+                            createAccount();
+                          }else
+                            {
+                              showDialog(context: context, builder: (context) {
+                                return  AlertDialog(
+                                  backgroundColor: Colors.black,
+                                  title: const Text("please fill all details",style: TextStyle(color: Colors.white),),
+                                  alignment: Alignment.center,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:BorderRadius.circular(15)
+                                  ),
+                                  actions: [
+                                    TextButton(onPressed: (){
+                                      Navigator.of(context).pop();
+                                    }, child: const Text("Yes",style: TextStyle(color: Colors.white70),),),
+                                  ],
+                                );
+                              },);
+                            }
+                      },
+                      child:_isLoading==false?Text("sign up",style:GoogleFonts.aBeeZee(fontSize: 18,color: Colors.white),):
+                      const CircularProgressIndicator(color: Colors.white,strokeWidth:4,)
+                  ),
+                ),
+               const SizedBox(
+                  height: 15,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -279,8 +295,8 @@ class _SignUpPageState extends State<SignUpPage> {
  }
 
   createAccount() async{
-    String name=bioController.text.toString();
-    String bio=nameController.text.toString();
+    String name=nameController.text.toString();
+    String bio=bioController.text.toString();
     String id=userNameController.text.toString();
     String email=emailController.text.toString().toLowerCase();
     String password=passwordController.text.toString().toLowerCase();

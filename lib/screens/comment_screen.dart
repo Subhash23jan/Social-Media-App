@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tab_bar/FIreBase_operations/firebase_store_methods.dart';
+import 'package:tab_bar/FIreBase_operations/firestore_methods.dart';
 import 'package:tab_bar/Models/comment.dart';
 import 'package:tab_bar/Models/user_model.dart';
 import 'package:tab_bar/providers/user_provider.dart';
@@ -24,6 +24,12 @@ class _CommentScreenState extends State<CommentScreen> {
   @override
   void initState() {
     super.initState();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    commentTextController.dispose();
   }
   @override
   Widget build(BuildContext context) {
