@@ -1,6 +1,5 @@
-# tab_bar
-
-A new Flutter project.
+## instagram_clone
+Instagram clone app which implemented using firebase database
 
 ## Getting Started
 
