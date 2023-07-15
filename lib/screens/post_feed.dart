@@ -34,7 +34,8 @@ class _PostFeedScreenState extends State<PostFeedScreen> {
           actions: [
             Padding(
                 padding: const EdgeInsets.only(right: 05),
-                child: IconButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context) =>  MessageScreen(userId: user.uid,),)),
+                child: IconButton(onPressed: ()=>Navigator.push(context,
+                    MaterialPageRoute(builder: (context) =>  MessageScreen(userId: user.uid,),)),
                     icon:const Icon(FontAwesomeIcons.facebookMessenger,color: Colors.white70,)))
           ],
         ),

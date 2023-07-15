@@ -93,12 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar:CupertinoTabBar(
         backgroundColor: Colors.black,
           items: [
-            BottomNavigationBarItem(icon:Icon(Icons.home,color:page==0?Colors.white:Colors.white30,),label: '',
+            BottomNavigationBarItem(icon:Icon(Icons.home_outlined,color:page==0?Colors.blue:Colors.white30,),label: '',
                 backgroundColor: Colors.black),
-            BottomNavigationBarItem(icon:Icon(Icons.search,color:page==1?Colors.white:Colors.white30),label: ''),
-            BottomNavigationBarItem(icon:Icon(Icons.add_circle,color:page==2?Colors.white:Colors.white30),label: ''),
-            BottomNavigationBarItem(icon:Icon(Icons.favorite,color:page==3?Colors.white:Colors.white30),label: ''),
-            BottomNavigationBarItem(icon:Icon(Icons.person,color:page==4?Colors.white:Colors.white30),label: ''),
+            BottomNavigationBarItem(icon:Icon(Icons.search,color:page==1?Colors.blue:Colors.white30),label: ''),
+            BottomNavigationBarItem(icon:Icon(Icons.add_a_photo_outlined,color:page==2?Colors.blue:Colors.white30),label: ''),
+            BottomNavigationBarItem(icon:Icon(Icons.favorite,color:page==3?Colors.blue:Colors.white30),label: ''),
+            BottomNavigationBarItem(icon:Icon(Icons.person_2_outlined,color:page==4?Colors.blue:Colors.white30),label: ''),
           ],
           onTap:onNavigationTap,),
       body:PageView(

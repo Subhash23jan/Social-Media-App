@@ -2,6 +2,7 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -33,9 +34,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor:Colors.white,
+        backgroundColor:Colors.black,
         toolbarHeight: kToolbarHeight+8,
         elevation: 130,
         leading:Padding(
@@ -52,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
           onTap: (){
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileScreen(uid: widget.receiver.uid),));
           },
-            child: Text(widget.receiver.name,style:GoogleFonts.aBeeZee(fontSize: 20,color: Colors.black,fontWeight: FontWeight.bold),)),
+            child: Text(widget.receiver.name,style:GoogleFonts.aBeeZee(fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)),
         actions: [
           TextButton(
               onPressed:(){
@@ -80,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           TextButton(onPressed: (){
             Navigator.pop(context);
-          }, child:Text("back",style:GoogleFonts.aBeeZee(color:Colors.black,fontSize: 20))),
+          }, child:Text("back",style:GoogleFonts.aBeeZee(color:Colors.white,fontSize: 20))),
 
         ],
       ),
@@ -154,60 +155,48 @@ class _ChatScreenState extends State<ChatScreen> {
             itemCount:snapshot.data?.docs.length,
             itemBuilder: (context, index) {
               dynamic snap=snapshot.data?.docs[index].data();
-              return snap['type']=='send'?Padding(
-                padding: const EdgeInsets.only(top: 10.0,bottom: 5),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding:const EdgeInsets.only(left:10,right: 50),
-                      child: Container(
-                        decoration:  const BoxDecoration(
-                            color: Colors.white70,
-                            borderRadius: BorderRadius.only(topRight: Radius.circular(18),bottomLeft: Radius.circular(18),bottomRight: Radius.circular(18)),
-                            border: Border.symmetric(vertical: BorderSide.none,horizontal: BorderSide.none)
-                        ),
-                        alignment: Alignment.center,
-                        constraints:const BoxConstraints(
-                            minHeight: 50,
-                            minWidth: 200,
-                          maxWidth: 200,
-                        ),
-                        child:ShowMessage(content:snap['content'], dateTime: snap['dateTime'].toDate(),type: snap['type'],),
+              return snap['type']=='send'?Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration:   BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(5)
+                    ),
+                    constraints:const BoxConstraints(
+                        minHeight: 50,
+                        minWidth: 200,
+                      maxWidth: 200,
+                    ),
+                    child:ShowMessage(content:snap['content'], dateTime: snap['dateTime'].toDate(),type: snap['type'],),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40),
+                    child: Text(DateFormat('hh:mm a').format(snap['dateTime'].toDate(),),style: const TextStyle(color: Colors.black),),
+                  ),
+                ],
+              ):
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(DateFormat('hh:mm a').format(snap['dateTime'].toDate(),),style: const TextStyle(color: Colors.black),),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40,top: 5),
+                    child: Container(
+                      decoration:   BoxDecoration(
+                          color:CupertinoColors.black,
+                          borderRadius: BorderRadius.circular(5),
+                          border:Border.all(color: Colors.white)
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40),
-                      child: Text(DateFormat('hh:mm a').format(snap['dateTime'].toDate(),),style: const TextStyle(color: Colors.white),),
-                    ),
-                  ],
-                ),
-              ):Padding(
-                padding: const EdgeInsets.only(top: 10.0,bottom: 5),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0,right: 40),
-                      child: Text(DateFormat('hh:mm a').format(snap['dateTime'].toDate(),),style: const TextStyle(color: Colors.white),),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.only(left: 60),
-                      child: Container(
-                        decoration:  const BoxDecoration(
-                            color: Colors.white30,
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(18),bottomLeft: Radius.circular(18),bottomRight: Radius.circular(18)),
-                            border: Border.symmetric(vertical: BorderSide.none,horizontal: BorderSide.none)
-                        ),
-                        alignment: Alignment.center,
-                        constraints:const BoxConstraints(
-                            minHeight: 50,
-                            minWidth: 200,
-                        ),
-                        child:ShowMessage(content:snap['content'], dateTime: snap['dateTime'].toDate(),type: snap['type'],),
+                      alignment: Alignment.center,
+                      constraints:const BoxConstraints(
+                          minHeight: 50,
+                          minWidth: 200,
                       ),
+                      child:ShowMessage(content:snap['content'], dateTime: snap['dateTime'].toDate(),type: snap['type'],),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
           },);
         }

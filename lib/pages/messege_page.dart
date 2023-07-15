@@ -141,7 +141,9 @@ class _MessageScreenState extends State<MessageScreen> {
           }
       }
     if(context.mounted){
-      showModalBottomSheet(context: context, builder: (context)=>ListView.builder(
+      showModalBottomSheet(context: context,
+        constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height*0.8),
+        builder: (context)=>ListView.builder(
         itemCount: users.length,
         itemBuilder: (BuildContext context, int index) {
           return Padding(

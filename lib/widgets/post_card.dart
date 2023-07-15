@@ -72,28 +72,34 @@ class _PostCardState extends State<PostCard> {
               mainAxisSize: MainAxisSize.min,
               children:  [
                 Row(
-                  children:  [
-                    const SizedBox(width: 10,),
-                    InkWell(
-                      onTap:()=>Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ImageViewScreen(postUrl:postUploader?.docs[0]['profile_url']),)),
-                      child: CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(postUploader?.docs[0]['profile_url']??"https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"),
-                      ),
-                    ),
-                    const SizedBox(width: 12,),
-                    Expanded(child: InkWell(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileScreen(uid: postUploader?.docs[0]['uid']),));
-                      },
-                      child:  Text(postUploader?.docs[0]['name'],style: GoogleFonts.aBeeZee(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children:  [
+                        const SizedBox(width: 10,),
+                        InkWell(
+                          onTap:()=>Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => ImageViewScreen(postUrl:postUploader?.docs[0]['profile_url']),)),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(postUploader?.docs[0]['profile_url']??"https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg"),
+                          ),
+                        ),
+                        const SizedBox(width: 12,),
+                        InkWell(
+                          onTap: (){
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileScreen(uid: postUploader?.docs[0]['uid']),));
+                          },
+                          child:  Text(postUploader?.docs[0]['name'],style: GoogleFonts.aBeeZee(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
 
-                      ),),
-                    )),
+                          ),),
+                        ),
+
+                      ],
+                    ),
                     PopupMenuButton<String>(
                       color: Colors.black,
                       constraints: const BoxConstraints(
@@ -185,26 +191,32 @@ class _PostCardState extends State<PostCard> {
                   height: 8,
                 ),
                 Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children:<Widget>[
-                    IconButton(onPressed: (){
-                     FirestoreMethods().updateLike(widget.snap['postId'], widget.user.uid, widget.snap['likes']);
-                    }, icon:likes.contains(widget.user.uid)?const Icon(Icons.favorite,color:Colors.red):const Icon(Icons.favorite_outline_rounded,color: Colors.white,)),
-                    IconButton(onPressed: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context) =>CommentScreen(widget.snap),)),icon: const Icon(FontAwesomeIcons.commentDots,color: Colors.white,)),
-                    IconButton(onPressed: () async{
-                     await Share.share(widget.snap['postUrl'],subject:"share using");
-                    }, icon: const Icon(Icons.share,color: Colors.white)),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children:<Widget>[
+                        IconButton(onPressed: (){
+                         FirestoreMethods().updateLike(widget.snap['postId'], widget.user.uid, widget.snap['likes']);
+                        }, icon:likes.contains(widget.user.uid)?const Icon(Icons.favorite,color:Colors.red):const Icon(Icons.favorite_outline_rounded,color: Colors.white,)),
+                        IconButton(onPressed: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context) =>CommentScreen(widget.snap),)),icon: const Icon(FontAwesomeIcons.commentDots,color: Colors.white,)),
+                        IconButton(onPressed: () async{
+                         await Share.share(widget.snap['postUrl'],subject:"share using");
+                        }, icon: const Icon(Icons.share,color: Colors.white)),
+                      ],
+                    ),
                     isBookmarked?IconButton(onPressed: (){
                       FirestoreMethods().removeBookmarks(widget.user.uid, widget.snap['postId']);
                       setState(() {
                         isBookmarked=false;
                       });
-                    },icon: const Icon(Icons.bookmark,color: Colors.white,size: 30,),padding: const EdgeInsets.only(left: 200),):IconButton(onPressed: (){
+                    },icon: const Icon(Icons.bookmark,color: Colors.white,size: 30,),padding: const EdgeInsets.only(right: 12),):IconButton(onPressed: (){
                       FirestoreMethods().addBookMarks(widget.user.uid, widget.snap['postId']);
                       setState(() {
                         isBookmarked=true;
                       });
-                    }, icon: const Icon(Icons.bookmark_border,color: Colors.white,size: 30),padding: const EdgeInsets.only(left: 200),),
+                    }, icon: const Icon(Icons.bookmark_border,color: Colors.white,size: 30),padding: const EdgeInsets.only(right: 12),),
                   ],
                 ),
                 Padding(
